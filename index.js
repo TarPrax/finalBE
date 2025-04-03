@@ -44,9 +44,9 @@ app.post("/subscribe", async (req, res) => {
   }
 });
 
-app.use("/test", auth, (req, res) => {
+app.get("/test", auth, (req, res) => {
   console.log("test");
-  res.send(respo);
+  res.status(300).send("not authorized");
 });
 app.use("/test", (req, res) => {
   console.log("universal");
@@ -64,6 +64,38 @@ app.use(
   }
 );
 
+app.get("/feed", async (req, res) => {
+  try {
+    const usersData = await User.find({});
+    res.send(usersData);
+  } catch (err) {
+    res.status(400).send("Some error occured: ");
+  }
+});
+
+app.post("/match", async (req, res) => {
+  const userPassword = req.body.password;
+  try {
+    console.log(userPassword);
+    const result = await User.findOne({ password: userPassword });
+    res.send(result);
+  } catch (err) {
+    res.status(400).send("some error occured");
+  }
+});
+
+app.delete("/delUser", async (req, res) => {
+  const userID = req.body.userID;
+
+  try {
+    console.log(userID);
+    const dele = await User.findByIdAndUpdate(userID, { lastName: "Shringi" });
+    res.send("deleted successfully");
+  } catch (err) {
+    res.status(400).send("some error occured");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("connected to database");
@@ -73,5 +105,5 @@ connectDB()
     });
   })
   .catch((err) => {
-    console.error(err + "  database not connected");
+    console.error(err + "  database gnot connected");
   });
