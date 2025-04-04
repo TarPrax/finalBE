@@ -89,7 +89,7 @@ app.post("/match", async (req, res) => {
 
 app.delete("/delUser", async (req, res) => {
   const userID = req.body.userID;
-
+  console.log(userID);
   try {
     console.log(userID);
     const dele = await User.findByIdAndUpdate(userID, { lastName: "Shringi" });
@@ -99,14 +99,34 @@ app.delete("/delUser", async (req, res) => {
   }
 });
 
-app.patch("/user", async (req, res) => {
-  const userID = req.body.userId;
-  console.log(userID);
+app.patch("/user/:userId", async (req, res) => {
+  const userID = req.params;
+  const data = req.body;
+  // console.log(data);
+  // console.log(userID);
 
   try {
+    const allowedFields = ["firstname", "lastName", "age"];
+
+    const checkAllowed = Object.keys(data).every((k) =>
+      allowedFields.includes(k)
+    );
+    if (!checkAllowed) {
+      throw new Error("Some error occurred");
+    }
+
+    const age = data.age;
+    if (age < 18) {
+      throw new Error("Your age is less than 18, you cannot sign In");
+    }
     const updated = await User.findByIdAndUpdate(
-      userID, // ✅ Pass the ID directly
-      { firstName: "Updated Name", emailId: "updated@gmail.com", age: 25 },
+      userID.userId, // ✅ Pass the ID directly
+      {
+        firstName: "Updated Name",
+        lastName: data.lastName,
+        emailId: "updated@gmail.com",
+        age: 25,
+      },
       { new: true, runValidators: true } // ✅ Return the updated document
     );
 
