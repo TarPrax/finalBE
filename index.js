@@ -23,9 +23,12 @@ app.post("/signup", async (req, res) => {
   // };
   console.log(req.body);
   const user = new User(req.body);
-
-  await user.save();
-  res.send("posted successfully the user");
+  try {
+    await user.save();
+    res.send("posted successfully the user");
+  } catch (err) {
+    res.status(400).send("Some Error occured" + err.message);
+  }
 });
 
 app.post("/subscribe", async (req, res) => {
@@ -93,6 +96,39 @@ app.delete("/delUser", async (req, res) => {
     res.send("deleted successfully");
   } catch (err) {
     res.status(400).send("some error occured");
+  }
+});
+
+app.patch("/user", async (req, res) => {
+  const userID = req.body.userId;
+  console.log(userID);
+
+  try {
+    const updated = await User.findByIdAndUpdate(
+      userID, // ✅ Pass the ID directly
+      { firstName: "Updated Name", emailId: "updated@gmail.com", age: 25 },
+      { new: true, runValidators: true } // ✅ Return the updated document
+    );
+
+    if (!updated) {
+      return res.status(404).send("User not found");
+    }
+
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(400).send("Some error: " + err.message);
+  }
+});
+
+app.delete("/user", async (req, res) => {
+  const delUser = req.body.userId;
+
+  try {
+    const del = await User.findByIdAndDelete(delUser);
+
+    res.send("user deleted successfully");
+  } catch (err) {
+    res.status(500).send("Some error occurred" + err.message);
   }
 });
 
