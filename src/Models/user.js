@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    firstname: {
+    firstName: {
       type: String,
       minLength: 3,
       maxLength: 25,
@@ -39,6 +39,8 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.index({ emailId: 1 }, { unique: true });
 
 const User = new mongoose.model("User", userSchema);
 

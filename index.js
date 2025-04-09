@@ -5,6 +5,9 @@ const express = require("express");
 const auth = require("./authentication");
 const User = require("./src/Models/user");
 const Subscriber = require("./src/Models/subscribers");
+const bcrypt = require("bcrypt");
+const { signupAuth } = require("./Utilis/signupauth");
+const validator = require("validator");
 
 const respo = {
   name: "tarun",
@@ -15,19 +18,52 @@ const app = express();
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  // const userOne = {
-  //   firstName: "Kishan",
-  //   lastName: "Singh",
-  //   emailId: "tarun12@gmail.com",
-  //   password: "tarun@123",
-  // };
-  console.log(req.body);
-  const user = new User(req.body);
+  const { firstName, lastName, emailId, age, gender } = req.body;
+
+  const { password } = req.body;
+
+  const pass = await bcrypt.hash(password, 10);
+  console.log(pass);
+  const user = new User({
+    firstName,
+    lastName,
+    emailId,
+    age,
+    gender,
+    password: pass,
+  });
   try {
+    signupAuth(req);
     await user.save();
     res.send("posted successfully the user");
   } catch (err) {
     res.status(400).send("Some Error occured" + err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const { firstname, lastName, emailId } = req.body;
+  const { password } = req.body;
+  try {
+    if (!validator.isEmail(emailId)) {
+      throw new Error("Inavlid Credentials");
+    }
+    console.log(emailId);
+    const data = await User.findOne({ emailId: emailId });
+    if (!data) {
+      throw new Error("Invalid Credentials");
+    }
+    console.log(data);
+
+    const rel = await bcrypt.compare(password, data.password);
+    console.log(rel);
+    if (!rel) {
+      throw new Error("Invalid Credential");
+    }
+
+    res.send("login successful");
+  } catch (err) {
+    res.status(400).send("ERROR :" + err.message);
   }
 });
 
