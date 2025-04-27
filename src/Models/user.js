@@ -1,5 +1,7 @@
 const validator = require("validator");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -7,7 +9,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       minLength: 3,
       maxLength: 25,
-      required: true,
     },
     lastName: {
       type: String,
@@ -35,12 +36,25 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       validate: [validator.isStrongPassword, "not a strong password"],
+      required: true,
     },
   },
   { timestamps: true }
 );
 
 userSchema.index({ emailId: 1 }, { unique: true });
+
+userSchema.methods.JWToken = async function () {
+  const data = this;
+  const token = await jwt.sign({ _id: data._id }, "Secret@#1234");
+  return token;
+};
+
+userSchema.methods.passValidator = async function (password) {
+  const data = this;
+  const res = await bcrypt.compare(password, data.password);
+  return res;
+};
 
 const User = new mongoose.model("User", userSchema);
 
