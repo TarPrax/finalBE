@@ -112,9 +112,15 @@ connection.get("/user/connections", authZ, async (req, res) => {
         { fromUserId: loggedInUser, connectionStatus: "accepted" },
         { toUserId: loggedInUser, connectionStatus: "accepted" },
       ],
+    }).populate("fromUserId", "firstName lastName emailId");
+
+    const relData = data.map((row) => {
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString())
+        return row.toUserId;
+      return row.fromUserId;
     });
-    console.log(data);
-    res.json({ messgae: "your connection", data: data });
+
+    res.json({ messgae: "your connection", data: relData });
   } catch (err) {
     res.status(400).send("Some error " + err.message);
   }
