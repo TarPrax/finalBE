@@ -4,6 +4,7 @@ const connection = express.Router();
 const ConnectionRequestModel = require("../Models/connection");
 const user = require("../Models/user");
 const authZ = require("/project/workspace/authentication.js");
+const User = require("../Models/user");
 
 connection.post(
   "/newConnectionRequest/:status/:userID",
@@ -123,6 +124,19 @@ connection.get("/user/connections", authZ, async (req, res) => {
     res.json({ messgae: "your connection", data: relData });
   } catch (err) {
     res.status(400).send("Some error " + err.message);
+  }
+});
+
+connection.get("/user/feed", authZ, async (req, res) => {
+  try {
+    const loggedInUser = req.userData;
+
+    const allUsers = await User.find({});
+    console.log(loggedInUser, "some more" + allUsers);
+
+    res.json({ allUsers: allUsers, loggedInUser: loggedInUser });
+  } catch (err) {
+    res.status(400).send("Error in feed api " + err.message);
   }
 });
 
