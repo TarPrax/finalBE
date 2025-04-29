@@ -131,10 +131,30 @@ connection.get("/user/feed", authZ, async (req, res) => {
   try {
     const loggedInUser = req.userData;
 
-    const allUsers = await User.find({});
-    console.log(loggedInUser, "some more" + allUsers);
+    let page = req.query.page || 1;
+    let limit = req.query.limit || 3;
+    limit = limit > 100 ? 100 : limit;
+    page = page < 1 ? 1 : page;
+    const skip = (page - 1) * limit;
 
-    res.json({ allUsers: allUsers, loggedInUser: loggedInUser });
+    const restrictProfile = await ConnectionRequestModel.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId toUserId");
+
+    const userRestricted = new Set();
+    restrictProfile.forEach((req) => {
+      userRestricted.add(req.fromUserId.toString());
+      userRestricted.add(req.toUserId.toString());
+    });
+
+    const UsertoView = await User.find({
+      _id: { $nin: Array.from(userRestricted), $ne: loggedInUser._id },
+    })
+      .select("firstName lastName")
+      .limit(limit)
+      .skip(skip);
+    console.log(UsertoView);
+    res.send(UsertoView);
   } catch (err) {
     res.status(400).send("Error in feed api " + err.message);
   }

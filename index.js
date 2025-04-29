@@ -26,7 +26,7 @@ connectDB()
   .then(() => {
     console.log("connected to database");
 
-    app.listen(6000, () => {
+    app.listen(1234, () => {
       console.log("connected to app");
     });
   })
