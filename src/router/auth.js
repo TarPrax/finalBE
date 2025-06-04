@@ -6,21 +6,26 @@ const validator = require("validator");
 const { signupAuth } = require("/project/workspace/Utilis/signupauth.js");
 
 authRouter.post("/signup", async (req, res) => {
-  const { firstName, lastName, emailId, age, gender } = req.body;
-
-  const { password } = req.body;
-
-  const pass = await bcrypt.hash(password, 10);
-
-  const user = new User({
-    firstName,
-    lastName,
-    emailId,
-    age,
-    gender,
-    password: pass,
-  });
   try {
+    const { firstName, lastName, emailId, age, gender } = req.body;
+
+    const { password } = req.body;
+
+    const pass = await bcrypt.hash(password, 10);
+    const existingUser = await User.findOne({ emailId: emailId });
+    if (existingUser) {
+      throw new Error("Email already exists");
+    }
+
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      age,
+      gender,
+      password: pass,
+    });
+
     signupAuth(req);
     await user.save();
 
@@ -50,7 +55,7 @@ authRouter.post("/login", async (req, res) => {
     }
     const token = await data.JWToken();
     res.cookie("token", token);
-    res.send("login successful");
+    res.send(data);
   } catch (err) {
     res.status(400).send("ERROR :" + err.message);
   }

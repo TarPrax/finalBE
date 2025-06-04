@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       lowercase: true,
-      unique: true,
+
       validate: [validator.isEmail, "not a valid E-mail"],
     },
     age: {
