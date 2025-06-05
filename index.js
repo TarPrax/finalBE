@@ -15,12 +15,23 @@ const userEdit = require("./src/router/useredit");
 const connection = require("./src/router/connection");
 const authZ = require("./authentication");
 const { testBcrypt } = require("../workspace/src/Test/test");
+const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "https://6xywc8-5174.csb.app", // allow your frontend
+    methods: ["GET", "POST", "OPTIONS"],
+    credentials: true, // if you send cookies
+  })
+);
+
 app.use("/", authRouter);
 app.use("/", userEdit);
 app.use("/", connection);
+
 console.log(this, "this ends");
 console.log(global, "global ends");
 console.log(globalThis, "global this ends");
@@ -28,7 +39,7 @@ connectDB()
   .then(() => {
     console.log("connected to database");
 
-    app.listen(1234, () => {
+    app.listen(7346, () => {
       console.log("connected to app");
     });
   })
