@@ -19,14 +19,8 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
-const cors = require("cors");
-app.use(
-  cors({
-    origin: "https://6xywc8-5174.csb.app", // allow your frontend
-    methods: ["GET", "POST", "OPTIONS"],
-    credentials: true, // if you send cookies
-  })
-);
+
+app.use(cors({ origin: "https://6xywc8-5173.csb.app", credentials: true }));
 
 app.use("/", authRouter);
 app.use("/", userEdit);
@@ -39,7 +33,7 @@ connectDB()
   .then(() => {
     console.log("connected to database");
 
-    app.listen(7346, () => {
+    app.listen(4336, () => {
       console.log("connected to app");
     });
   })
