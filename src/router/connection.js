@@ -3,7 +3,7 @@ const express = require("express");
 const connection = express.Router();
 const ConnectionRequestModel = require("../Models/connection");
 const user = require("../Models/user");
-const authZ = require("/project/workspace/authentication.js");
+const authZ = require("../../authentication");
 const User = require("../Models/user");
 
 connection.post(

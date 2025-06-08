@@ -3,7 +3,7 @@ const authRouter = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../Models/user");
 const validator = require("validator");
-const { signupAuth } = require("/project/workspace/Utilis/signupauth.js");
+const { signupAuth } = require("../../Utilis/signupauth");
 
 authRouter.post("/signup", async (req, res) => {
   try {

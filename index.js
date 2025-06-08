@@ -1,4 +1,4 @@
-const connectDB = require("/project/workspace/Utilis/database.js");
+const connectDB = require("../DevTinder/Utilis/database");
 
 const express = require("express");
 
@@ -14,7 +14,7 @@ const authRouter = require("./src/router/auth");
 const userEdit = require("./src/router/useredit");
 const connection = require("./src/router/connection");
 const authZ = require("./authentication");
-const { testBcrypt } = require("../workspace/src/Test/test");
+const { testBcrypt } = require("../DevTinder/src/Test/test");
 const cors = require("cors");
 const app = express();
 app.use(express.json());
@@ -34,7 +34,7 @@ connectDB()
     console.log("connected to database");
 
     app.listen(4336, () => {
-      console.log("connected to app");
+      console.log(`Server is running on http://localhost:4336`);
     });
   })
   .catch((err) => {
