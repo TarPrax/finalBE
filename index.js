@@ -1,4 +1,4 @@
-const connectDB = require("../DevTinder/Utilis/database");
+const connectDB = require("../Asus-Backend/Utilis/database");
 
 const express = require("express");
 
@@ -14,7 +14,7 @@ const authRouter = require("./src/router/auth");
 const userEdit = require("./src/router/useredit");
 const connection = require("./src/router/connection");
 const authZ = require("./authentication");
-const { testBcrypt } = require("../DevTinder/src/Test/test");
+const { testBcrypt } = require("../Asus-Backend/src/Test/test");
 const cors = require("cors");
 const app = express();
 app.use(express.json());

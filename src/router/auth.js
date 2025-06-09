@@ -38,6 +38,7 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/login", async (req, res) => {
   const { firstname, lastName, emailId } = req.body;
   const { password } = req.body;
+  console.log(req.body);
   try {
     if (!validator.isEmail(emailId)) {
       throw new Error("Inavlid Credentials");
