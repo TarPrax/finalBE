@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("../Models/user");
 const validator = require("validator");
 const { signupAuth } = require("../../Utilis/signupauth");
+const authZ = require("../../authentication");
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -32,6 +33,17 @@ authRouter.post("/signup", async (req, res) => {
     res.send("posted successfully the user");
   } catch (err) {
     res.status(400).send("Some Error occured" + err.message);
+  }
+});
+
+
+authRouter.get("/isUserLoggedIn",authZ, async (req, res) => {
+  try {
+    const { token } = req.cookies;
+
+    res.send(req.userData);
+  } catch (err) {
+    res.status(400).send("Error: " + err.message);
   }
 });
 
