@@ -32,16 +32,7 @@ connection.post(
         throw new Error("Cannot send Request to Oneself");
       }
 
-      // const isAlreadyPresent = await ConnectionRequestModel.findOne({
-      //   $or: [
-      //     { fromUserId, toUserId },
-      //     { fromUserId: toUserId, toUserId: fromUserId },
-      //   ],
-      // });
-
-      // if (isAlreadyPresent) {
-      //   throw new Error("Already requeted");
-      // }
+      
 
       await new ConnectionRequestModel({
         fromUserId,
