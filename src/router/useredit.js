@@ -39,7 +39,7 @@ userEdit.patch("/user/:userId", async (req, res) => {
     if (!checkAllowed) {
       throw new Error("Some error occurred");
     }
-
+console.log("Received body:", data);
     const age = data.age;
     if (age < 18) {
       throw new Error("Your age is less than 18, you cannot sign In");
@@ -47,10 +47,9 @@ userEdit.patch("/user/:userId", async (req, res) => {
     const updated = await User.findByIdAndUpdate(
       userID.userId, // ✅ Pass the ID directly
       {
-        firstName: "Updated Name",
+        firstName: data.firstName,
         lastName: data.lastName,
-        emailId: "updated@gmail.com",
-        age: 25,
+        age: data.age,
       },
       { new: true, runValidators: true } // ✅ Return the updated document
     );
