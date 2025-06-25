@@ -31,7 +31,7 @@ userEdit.patch("/user/:userId", async (req, res) => {
   // console.log(userID);
 
   try {
-    const allowedFields = ["firstname", "lastName", "age"];
+    const allowedFields = ["firstName", "lastName", "age"];
 
     const checkAllowed = Object.keys(data).every((k) =>
       allowedFields.includes(k)
@@ -44,6 +44,9 @@ console.log("Received body:", data);
     if (age < 18) {
       throw new Error("Your age is less than 18, you cannot sign In");
     }
+
+    const currentUser = await User.findById(userID.userId);
+    console.log("Current user:", currentUser);
     const updated = await User.findByIdAndUpdate(
       userID.userId, // ✅ Pass the ID directly
       {
