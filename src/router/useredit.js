@@ -1,6 +1,8 @@
 const express = require("express");
 const userEdit = express.Router();
 const authZ = require("../../authentication");
+const User = require("../Models/user");
+const { userEditAuth } = require("../../Utilis/signupauth");
 
 const { profileUpdateAuth } = require("../../Utilis/signupauth");
 userEdit.patch("/profile/edit", authZ, async (req, res) => {
@@ -25,47 +27,47 @@ userEdit.patch("/profile/edit", authZ, async (req, res) => {
 
 
 userEdit.patch("/user/:userId", async (req, res) => {
-  const userID = req.params;
-  const data = req.body;
-  // console.log(data);
-  // console.log(userID);
+  const { userId } = req.params;
+  const { firstName, lastName, age, ...rest } = req.body;
+
+  // Validate required fields
+  if (!firstName || !lastName || age === undefined) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  // Validate allowed fields only
+  const allowedFields = ["firstName", "lastName", "age"];
+  const invalidFields = Object.keys(rest).filter((key) => !allowedFields.includes(key));
+  if (invalidFields.length > 0) {
+    return res.status(400).json({ error: "Some error occurred: Invalid fields present" });
+  }
+
+  // Check age
+  if (age < 18) {
+    return res.status(400).json({ error: "Your age is less than 18, you cannot sign in" });
+  }
 
   try {
-    const allowedFields = ["firstName", "lastName", "age"];
-
-    const checkAllowed = Object.keys(data).every((k) =>
-      allowedFields.includes(k)
-    );
-    if (!checkAllowed) {
-      throw new Error("Some error occurred");
-    }
-console.log("Received body:", data);
-    const age = data.age;
-    if (age < 18) {
-      throw new Error("Your age is less than 18, you cannot sign In");
-    }
-
-    const currentUser = await User.findById(userID.userId);
+    const currentUser = await User.findById(userId);
     console.log("Current user:", currentUser);
-    const updated = await User.findByIdAndUpdate(
-      userID.userId, // ✅ Pass the ID directly
-      {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        age: data.age,
-      },
-      { new: true, runValidators: true } // ✅ Return the updated document
-    );
 
-    if (!updated) {
-      return res.status(404).send("User not found");
+    if (!currentUser) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    res.status(200).json(updated);
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { firstName, lastName, age },
+      { new: true, runValidators: true }
+    );
+
+    res.json({ message: "User updated successfully", user: updatedUser });
   } catch (err) {
-    res.status(400).send("Some error: " + err.message);
+    console.error("Error updating user:", err.message);
+    res.status(500).send("Some error: " + err.message);
   }
 });
+
 
 userEdit.delete("/user", async (req, res) => {
   const delUser = req.body.userId;

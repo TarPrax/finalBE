@@ -122,7 +122,7 @@ connection.get("/user/feed", authZ, async (req, res) => {
   try {
     const loggedInUser = req.userData;
 
-    let page = req.query.page || 1;
+    let page = req.query.page || 5;
     let limit = req.query.limit || 3;
     limit = limit > 100 ? 100 : limit;
     page = page < 1 ? 1 : page;
