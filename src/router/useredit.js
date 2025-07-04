@@ -2,7 +2,7 @@ const express = require("express");
 const userEdit = express.Router();
 const authZ = require("../../authentication");
 const User = require("../Models/user");
-const { userEditAuth } = require("../../Utilis/signupauth");
+const {userEditAuth} = require("../../Utilis/signupauth");
 
 const { profileUpdateAuth } = require("../../Utilis/signupauth");
 userEdit.patch("/profile/edit", authZ, async (req, res) => {
@@ -67,6 +67,7 @@ userEdit.patch("/user/:userId", async (req, res) => {
     res.status(500).send("Some error: " + err.message);
   }
 });
+
 
 
 userEdit.delete("/user", async (req, res) => {

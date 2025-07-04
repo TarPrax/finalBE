@@ -1,4 +1,4 @@
-const connectDB = require("../Asus-Backend/Utilis/database");
+const connectDB= require("./Utilis/database")
 
 const express = require("express");
 
@@ -14,7 +14,7 @@ const authRouter = require("./src/router/auth");
 const userEdit = require("./src/router/useredit");
 const connection = require("./src/router/connection");
 const authZ = require("./authentication");
-const { testBcrypt } = require("../Asus-Backend/src/Test/test");
+
 const cors = require("cors");
 const app = express();
 app.use(express.json());
@@ -40,6 +40,4 @@ connectDB()
   .catch((err) => {
     console.error(err + "  database gnot connected");
   });
-setTimeout(function () {
-  testBcrypt();
-}, 5000);
+
