@@ -21,7 +21,7 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({ origin: `${endpoint}`, credentials: true }));
+app.use(cors({ origin: `https://der-tinder-frontends.onrender.com`, credentials: true }));
 
 app.use("/", authRouter);
 app.use("/", userEdit);
