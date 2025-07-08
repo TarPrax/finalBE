@@ -20,6 +20,8 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+require('dotenv').config()
+
 
 app.use(cors({ origin: `https://der-tinder-frontends.onrender.com`, credentials: true }));
 
