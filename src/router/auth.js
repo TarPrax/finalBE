@@ -47,6 +47,30 @@ authRouter.get("/isUserLoggedIn",authZ, async (req, res) => {
   }
 });
 
+
+
+authRouter.get("/user/:userId",authZ, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).send("Some error occurred" + err.message);
+  }
+});
+
+
+
+
+
+
+
+
+
 authRouter.post("/login", async (req, res) => {
   const { firstname, lastName, emailId } = req.body;
   const { password } = req.body;

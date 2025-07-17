@@ -5,6 +5,9 @@ const User = require("../Models/user");
 const {userEditAuth} = require("../../Utilis/signupauth");
 
 const { profileUpdateAuth } = require("../../Utilis/signupauth");
+
+
+
 userEdit.patch("/profile/edit", authZ, async (req, res) => {
   try {
     console.log("Started Updating");
